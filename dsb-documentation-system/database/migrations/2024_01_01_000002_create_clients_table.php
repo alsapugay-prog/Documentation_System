@@ -30,8 +30,7 @@ return new class extends Migration
             ])->default('Pending');
 
             // Nilagyan natin ng ->default('[]') para hindi maging null at laging handa bilang array sa Alpine.js mo
-            $table->json('requirements_checklist')->default('[]');
-
+            $table->json('requirements_checklist')->nullable()->default(null);
             $table->timestamps();
         });
     }
