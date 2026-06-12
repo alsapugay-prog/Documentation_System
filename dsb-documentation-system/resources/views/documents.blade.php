@@ -26,11 +26,10 @@
     background: #0c1626;
     border: 1px solid rgba(255,255,255,0.07);
     border-radius: 14px;
-    margin-bottom: 1.5rem;
-    overflow: hidden;
+    margin-bottom: 2.5rem;
 }
 .client-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; cursor: pointer; user-select: none; transition: background 0.15s; border-radius: 14px; }
-.client-header.is-open { border-radius: 14px 14px 0 0; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.client-header.is-open { border-radius: 14px 14px 0 0; border-bottom: 1px solid rgba(255,255,255,0.07); background: rgba(255,255,255,0.02); }
 .client-header:hover { background: rgba(255,255,255,0.03); }
 .client-info  { display: flex; align-items: center; gap: 0.85rem; }
 .client-avatar{ width: 40px; height: 40px; border-radius: 10px; background: rgba(59,130,246,0.15); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; color: #5ca3e8; flex-shrink: 0; }
@@ -49,7 +48,7 @@
 .chevron.open { transform: rotate(180deg); }
 
 /* Body */
-.client-body { display: none; padding: 1.25rem; }
+.client-body { display: none; padding: 1.25rem 1.25rem 1.5rem; }
 .client-body.open { display: block; }
 
 /* Tabs */
@@ -206,7 +205,7 @@
 
     <div class="client-card" id="card-{{ $client->id }}">
 
-        <div class="client-header" id="hdr-{{ $client->id }}" onclick="toggleCard({{ $client->id }})">
+        <div class="client-header is-open" id="hdr-{{ $client->id }}" onclick="toggleCard({{ $client->id }})">
             <div class="client-info">
                 <div class="client-avatar">{{ $initial }}</div>
                 <div>
@@ -220,11 +219,11 @@
             <div class="hdr-right">
                 <span class="badge badge-gray">{{ $docCount }} {{ Str::plural('file',$docCount) }}</span>
                 <span class="badge {{ $statusClass }}">{{ $client->status }}</span>
-                <i class="fa-solid fa-chevron-down chevron" id="chev-{{ $client->id }}"></i>
+                <i class="fa-solid fa-chevron-down chevron open" id="chev-{{ $client->id }}"></i>
             </div>
         </div>
 
-        <div class="client-body" id="body-{{ $client->id }}">
+        <div class="client-body open" id="body-{{ $client->id }}">
 
             <div class="tab-bar no-print">
                 <button class="tab-btn active" onclick="switchTab({{ $client->id }},'tracker',this)">
@@ -386,7 +385,11 @@
         </div>
     @endif
 
-</div>
+</div>{{-- end tab-files --}}
+
+        </div>{{-- end client-body --}}
+
+    </div>{{-- end client-card --}}
 
     @empty
     <div class="empty-state">
@@ -395,7 +398,7 @@
     </div>
     @endforelse
 
-</div>
+</div>{{-- end docs-wrap --}}
 
 <div id="toast"></div>
 
@@ -506,7 +509,7 @@ function printClient(clientId,name,service,received,status) {
     const notes=document.querySelector(`.notes-area[data-client="${clientId}"]`)?.value??'';
     const now=new Date().toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'});
     document.getElementById('print-area').style.display='block';
-    document.getElementById('print-area').innerHTML=`<div class="print-header"><h2>DSB Documentation Services — Status Report</h2><p>Client: <strong>${name}</strong> &nbsp;|&nbsp; Service: ${service} &nbsp;|&nbsp; Received: ${received} &nbsp;|&nbsp; Status: ${status}</p><p style="font-size:0.72rem;color:#94a3b8;">Printed: ${now}</p></div><div class="print-section"><h3>Agency Tracker</h3>${agRows.join('')}</div><div class="print-section"><h3>Document Status</h3>${docRows.join('')}</div>${notes?`<div class="print-section"><h3>Notes / Updates</h3><div class="print-notes">${notes}</div></div>`:''}<div class="print-footer">DSB Documentation Services · 2nd/F Plaza Medica Annex Building Setton St. Triangulo, Naga City</div>`;
+    document.getElementById('print-area').innerHTML=`<div class="print-header" style="display:flex;align-items:center;gap:1.25rem;margin-bottom:1.5rem;border-bottom:2px solid #1e293b;padding-bottom:1rem;"><img src="/images/dsb-logo.png" style="width:72px;height:72px;object-fit:contain;flex-shrink:0;" alt="DSB Logo"><div><h2 style="font-size:1.25rem;font-weight:800;margin:0 0 0.25rem;color:#0f172a;">DSB Documentation Services — Status Report</h2><p style="font-size:0.8rem;color:#475569;margin:0 0 0.15rem;">Client: <strong>${name}</strong> &nbsp;|&nbsp; Service: ${service} &nbsp;|&nbsp; Received: ${received} &nbsp;|&nbsp; Status: ${status}</p><p style="font-size:0.72rem;color:#94a3b8;margin:0;">Printed: ${now}</p></div></div><div class="print-section"><h3>Agency Tracker</h3>${agRows.join('')}</div><div class="print-section"><h3>Document Status</h3>${docRows.join('')}</div>${notes?`<div class="print-section"><h3>Notes / Updates</h3><div class="print-notes">${notes}</div></div>`:''}<div class="print-footer">DSB Documentation Services · 2nd/F Plaza Medica Annex Building Setton St. Triangulo, Naga City</div>`;
     window.print();
     document.getElementById('print-area').style.display='none';
 }
